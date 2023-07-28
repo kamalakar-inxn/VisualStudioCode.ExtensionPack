@@ -1,0 +1,49 @@
+{
+  "name": "aqovia-vscode-extension-pack",
+  "displayName": "Aqovia VSCode ExtensionPack",
+  "description": "Aqovia Visual Studio Code Extension Pack",
+  "version": "1.3.7",
+  "publisher": "Aqovia",
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "scripts": {
+    "pack": "vsce package --out VSCodeExtensionsPack.vsix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aqovia/VisualStudioCode.ExtensionPack"
+  },
+  "categories": [
+    "Extension Packs"
+  ],
+  "extensionPack": [
+    "hnw.vscode-auto-open-markdown-preview",
+    "redhat.vscode-yaml",
+    "Zignd.html-css-class-completion",
+    "streetsidesoftware.code-spell-checker",
+    "ms-vscode.csharp",
+    "donjayamanne.git-extension-pack",
+    "eriklynd.json-tools",
+    "dbaeumer.vscode-eslint",
+    "mrmlnc.vscode-less",
+    "DavidAnson.vscode-markdownlint",
+    "ms-mssql.mssql",
+    "leizongmin.node-module-intellisense",
+    "christian-kohler.npm-intellisense",
+    "polymer.polymer-ide",
+    "ms-vscode.PowerShell",
+    "ms-python.python",
+    "pflannery.vscode-versionlens",
+    "DotJoshJohnson.xml",
+    "bierner.lit-html",
+    "msazurermtools.azurerm-vscode-tools",
+    "ms-azure-devops.azure-pipelines",
+    "mads-hartmann.bash-ide-vscode",
+    "42crunch.vscode-openapi",
+    "mermade.openapi-lint",
+    "adisreyaj.swagger-snippets",
+    "arjun.swagger-viewer"
+  ]
+}
