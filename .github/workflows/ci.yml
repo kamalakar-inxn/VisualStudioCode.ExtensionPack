@@ -89,6 +89,6 @@ jobs:
               vsce publish -p $PERSONAL_ACCESS_TOKEN
             else
               # For pre-release versions (only patch version changed), publish as pre-release
-              echo "Publishing pre-release version - ${{ steps.version.outputs.new-versionn }}"
+              echo "Publishing pre-release version - ${{ steps.version.outputs.new-version }}"
               vsce publish --pre-release -p $PERSONAL_ACCESS_TOKEN
             fi
