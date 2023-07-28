@@ -1,0 +1,94 @@
+name: Package and Publish to Visual Studio Marketplace
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Set Git configuration
+        run: |
+            git config user.name "${GITHUB_ACTOR}"
+            git config user.email "${GITHUB_ACTOR}@bots.github.com"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Bump version and create Git tag
+        uses: Aqovia/npm-version-increment@v1.0.4
+        id: version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Extract extensionPack from package.json
+        run: |
+            # Get the "extensionPack" section from package.json and save it in a file
+            node -p "JSON.stringify(require('./package.json').extensionPack, null, 2)" > extensionPack.json
+            # Output the contents of extensionPack.json to the build log
+            #cat extensionPack.json
+  
+      - name: Update README.md
+        shell: pwsh
+        run: |
+            # Read the extensions from extensionPack.json and format them as bullet points
+            $extensions = Get-Content -Raw -Path "extensionPack.json" | ConvertFrom-Json
+            $formatted_extensions = $extensions -join "`n- "
+            $formatted_extensions = "`n<!-- EXTENSION_PACK_START -->`n- " + $formatted_extensions + "`n<!-- EXTENSION_PACK_END -->"
+  
+            # Read the README.md content
+            $readme_content = Get-Content -Raw -Path "README.md"
+  
+            # Use regular expressions to find and replace the section between markers
+            $regex = "(?s)(\r?\n)*<!-- EXTENSION_PACK_START -->.*?<!-- EXTENSION_PACK_END -->"
+            $updated_content = $readme_content -replace $regex, $formatted_extensions
+  
+            # Remove any leading or trailing newlines
+            $updated_content = $updated_content.Trim()
+  
+            # Write the updated content back to README.md
+            $updated_content | Set-Content -Path "README.md" -NoNewline
+
+      - name: Install vsce CLI
+        run: npm install -g @vscode/vsce
+
+      - name: Build extension and create VSIX package
+        run: vsce package
+  
+      - name: Publish to Visual Studio Marketplace
+        env:
+            PERSONAL_ACCESS_TOKEN: ${{ secrets.VS_MARKETPLACE_PAT }}
+        run: |
+            echo "CURRENT_VERSION=${{ steps.version.outputs.current-version }}"
+            echo "NEW_VERSION=${{ steps.version.outputs.new-version }}"
+
+            # Extract the major and minor version numbers before and after the version bump
+            CURRENT_MAJOR=$(echo ${{ steps.version.outputs.current-version }} | cut -d. -f1)
+            CURRENT_MINOR=$(echo ${{ steps.version.outputs.current-version }} | cut -d. -f2)
+
+            NEW_MAJOR=$(echo ${{ steps.version.outputs.new-version }} | cut -d. -f1)
+            NEW_MINOR=$(echo ${{ steps.version.outputs.new-version }} | cut -d. -f2)
+
+            # Compare the version numbers to determine if it's a pre-release or a full release
+            if [ "$NEW_MAJOR" != "$CURRENT_MAJOR" ] || [ "$NEW_MINOR" != "$CURRENT_MINOR" ]; then
+              # For full release versions (major or minor version changed), publish normally
+              echo "Publishing full release version - ${{ steps.version.outputs.new-version }}"
+              vsce publish -p $PERSONAL_ACCESS_TOKEN
+            else
+              # For pre-release versions (only patch version changed), publish as pre-release
+              echo "Publishing pre-release version - ${{ steps.version.outputs.new-versionn }}"
+              vsce publish --pre-release -p $PERSONAL_ACCESS_TOKEN
+            fi
