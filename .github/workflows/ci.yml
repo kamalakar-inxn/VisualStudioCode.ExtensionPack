@@ -39,7 +39,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: CHANGELOG.md
-          sinceTag: ${{ steps.version.outputs.current-version }}
+          sinceTag: "v${{ steps.version.outputs.current-version }}"
       
       - name: Install vsce CLI
         run: npm install -g @vscode/vsce
