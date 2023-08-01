@@ -28,17 +28,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Generate release changelog
-        uses: heinrichreimer/github-changelog-generator-action@v2.3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: CHANGELOG.md
-
       - name: Bump version and create Git tag
         uses: Aqovia/npm-version-increment@tidyup
         id: version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate release changelog
+        uses: heinrichreimer/github-changelog-generator-action@v2.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: CHANGELOG.md
+          sinceTag: ${{ steps.version.outputs.current-version }}
       
       - name: Install vsce CLI
         run: npm install -g @vscode/vsce
