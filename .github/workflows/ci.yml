@@ -43,7 +43,7 @@ jobs:
             node -p "JSON.stringify(require('./package.json').extensionPack, null, 2)" > extensionPack.json
 
             # Read the extensions from extensionPack.json and convert them to Display Names and URLs
-            $extensions = Get-Content -Raw -Path "extensionPack.json" | ConvertFrom-Jsongit 
+            $extensions = Get-Content -Raw -Path "extensionPack.json" | ConvertFrom-Json
             $formatted_extensions = @()
             foreach ($extension in $extensions) {
               $dispName = $(vsce show $extension --json | ConvertFrom-Json | Select-Object -ExpandProperty displayName)
