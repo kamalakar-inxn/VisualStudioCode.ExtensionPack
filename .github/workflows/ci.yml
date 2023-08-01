@@ -28,6 +28,12 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Generate release changelog
+        uses: heinrichreimer/github-changelog-generator-action@v2.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: CHANGELOG.md
+
       - name: Bump version and create Git tag
         uses: Aqovia/npm-version-increment@tidyup
         id: version
@@ -40,10 +46,10 @@ jobs:
       - name: Extract extensionPack and update README
         shell: pwsh
         run: |
-            node -p "JSON.stringify(require('./package.json').extensionPack, null, 2)" > extensionPack.json
+            # Read the extensions and convert them to Display Names and URLs
+            $extensionsJSON = node -p "JSON.stringify(require('./package.json').extensionPack, null, 2)"
+            $extensions = $extensionsJSON | ConvertFrom-Json
 
-            # Read the extensions from extensionPack.json and convert them to Display Names and URLs
-            $extensions = Get-Content -Raw -Path "extensionPack.json" | ConvertFrom-Json
             $formatted_extensions = @()
             foreach ($extension in $extensions) {
               $dispName = $(vsce show $extension --json | ConvertFrom-Json | Select-Object -ExpandProperty displayName)
