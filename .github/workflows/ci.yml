@@ -78,24 +78,25 @@ jobs:
       - name: Publish to Visual Studio Marketplace
         env:
             PERSONAL_ACCESS_TOKEN: ${{ secrets.VS_MARKETPLACE_PAT }}
+        shell: pwsh
         run: |
-            echo "CURRENT_VERSION=${{ steps.version.outputs.current-version }}"
-            echo "NEW_VERSION=${{ steps.version.outputs.new-version }}"
+            Write-Output "CURRENT_VERSION: ${{ steps.version.outputs.current-version }}"
+            Write-Output "NEW_VERSION: ${{ steps.version.outputs.new-version }}"
 
             # Extract the major and minor version numbers before and after the version bump
-            CURRENT_MAJOR=$(echo ${{ steps.version.outputs.current-version }} | cut -d. -f1)
-            CURRENT_MINOR=$(echo ${{ steps.version.outputs.current-version }} | cut -d. -f2)
+            $CURRENT_MAJOR = $CURRENT_VERSION.Split(".")[0]
+            $CURRENT_MINOR = $CURRENT_VERSION.Split(".")[1]
+            
+            $NEW_MAJOR = $NEW_VERSION.Split(".")[0]
+            $NEW_MINOR = $NEW_VERSION.Split(".")[1]
 
-            NEW_MAJOR=$(echo ${{ steps.version.outputs.new-version }} | cut -d. -f1)
-            NEW_MINOR=$(echo ${{ steps.version.outputs.new-version }} | cut -d. -f2)
-
-            # Compare the version numbers to determine if it's a pre-release or a full release
-            if [ "$NEW_MAJOR" != "$CURRENT_MAJOR" ] || [ "$NEW_MINOR" != "$CURRENT_MINOR" ]; then
+            If($CURRENT_MAJOR -ne $NEW_MAJOR -or $CURRENT_MINOR -ne $NEW_MINOR ) {
               # For full release versions (major or minor version changed), publish normally
-              echo "Publishing full release version - ${{ steps.version.outputs.new-version }}"
+              Write-Output "Publishing full release version - ${{ steps.version.outputs.new-version }}"
               vsce publish -p $PERSONAL_ACCESS_TOKEN
-            else
-              # For pre-release versions (only patch version changed), publish as pre-release
-              echo "Publishing pre-release version - ${{ steps.version.outputs.new-version }}"
-              vsce publish --pre-release -p $PERSONAL_ACCESS_TOKEN
-            fi
+            }
+            Else {
+              # For patch versions, publish as a pre-release
+              Write-Output "Publishing pre-release version - ${{ steps.version.outputs.new-version }}"
+              vsce publish --pre-release -p $PERSONAL_ACCESS_TOKEN 
+            }
