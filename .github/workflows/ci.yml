@@ -39,7 +39,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: CHANGELOG.md
-          sinceTag: "v${{ steps.version.outputs.current-version }}"
+          sinceTag: "v0.0.17"
       
       - name: Install vsce CLI
         run: npm install -g @vscode/vsce
@@ -58,7 +58,7 @@ jobs:
               $formatted_extensions += "- [$dispName]($url)`n"
             }
             
-            $formatted_extensions = "`n<!-- EXTENSION_PACK_START -->`n- " + $formatted_extensions + "`n<!-- EXTENSION_PACK_END -->"
+            $formatted_extensions = "`n" + $formatted_extensions + "`n"
   
             $readme_content = Get-Content -Raw -Path "README.md"
   
