@@ -80,8 +80,8 @@ jobs:
             PERSONAL_ACCESS_TOKEN: ${{ secrets.VS_MARKETPLACE_PAT }}
         shell: pwsh
         run: |
-            $CURRENT_VERSION = $(${{ steps.version.outputs.current-version }})
-            $NEW_VERSION = $(${{ steps.version.outputs.new-version }})
+            $CURRENT_VERSION = Get-Content '${{ steps.version.outputs.current-version }}'
+            $NEW_VERSION = Get-Content '${{ steps.version.outputs.new-version }}' | ConvertFrom-Json
 
             Write-Output "CURRENT_VERSION: $CURRENT_VERSION"
             Write-Output "NEW_VERSION: $NEW_VERSION"
