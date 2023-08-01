@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: 'lts/*'
 
       - name: Set Git configuration
         run: |
@@ -48,7 +48,7 @@ jobs:
             foreach ($extension in $extensions) {
               $dispName = $(vsce show $extension --json | ConvertFrom-Json | Select-Object -ExpandProperty displayName)
               $url = "https://marketplace.visualstudio.com/items?itemName=$($extension)"
-              $formatted_extensions += "- [$dispName]($url)"
+              $formatted_extensions += "- [$dispName]($url)`n"
             }
             
             $formatted_extensions = "`n<!-- EXTENSION_PACK_START -->`n- " + $formatted_extensions + "`n<!-- EXTENSION_PACK_END -->"
