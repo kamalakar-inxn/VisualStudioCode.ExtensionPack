@@ -84,11 +84,11 @@ jobs:
             Write-Output "NEW_VERSION: ${{ steps.version.outputs.new-version }}"
 
             # Extract the major and minor version numbers before and after the version bump
-            $CURRENT_MAJOR = ${{ steps.version.outputs.current-version }}.Split(".")[0]
-            $CURRENT_MINOR = ${{ steps.version.outputs.current-version }}.Split(".")[1]
+            $CURRENT_MAJOR = $(${{ steps.version.outputs.current-version }}).Split(".")[0]
+            $CURRENT_MINOR = $(${{ steps.version.outputs.current-version }}).Split(".")[1]
             
-            $NEW_MAJOR = ${{ steps.version.outputs.new-version }}.Split(".")[0]
-            $NEW_MINOR = ${{ steps.version.outputs.new-version }}.Split(".")[1]
+            $NEW_MAJOR = $(${{ steps.version.outputs.new-version }}).Split(".")[0]
+            $NEW_MINOR = $(${{ steps.version.outputs.new-version }}).Split(".")[1]
 
             If($CURRENT_MAJOR -ne $NEW_MAJOR -or $CURRENT_MINOR -ne $NEW_MINOR ) {
               # For full release versions (major or minor version changed), publish normally
