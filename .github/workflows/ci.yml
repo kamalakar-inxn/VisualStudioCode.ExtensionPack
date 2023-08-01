@@ -34,22 +34,22 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
-      - name: Extract extensionPack from package.json
-        run: |
-            # Get the "extensionPack" section from package.json and save it in a file
-            node -p "JSON.stringify(require('./package.json').extensionPack, null, 2)" > extensionPack.json
-            # Output the contents of extensionPack.json to the build log
-            #cat extensionPack.json
-  
-      - name: Update README.md
+      - name: Extract extensionPack and update README
         shell: pwsh
         run: |
-            # Read the extensions from extensionPack.json and format them as bullet points
+            node -p "JSON.stringify(require('./package.json').extensionPack, null, 2)" > extensionPack.json
+
+            # Read the extensions from extensionPack.json and convert them to Display Names and URLs
             $extensions = Get-Content -Raw -Path "extensionPack.json" | ConvertFrom-Json
-            $formatted_extensions = $extensions -join "`n- "
+            $formatted_extensions = @()
+            foreach ($extension in $extensions) {
+              $dispName = $(vsce show $extension --json | ConvertFrom-Json | Select-Object -ExpandProperty displayName)
+              $url = "https://marketplace.visualstudio.com/items?itemName=$($extension)"
+              $formatted_extensions += "- [$dispName]($url)"
+            }
+            
             $formatted_extensions = "`n<!-- EXTENSION_PACK_START -->`n- " + $formatted_extensions + "`n<!-- EXTENSION_PACK_END -->"
   
-            # Read the README.md content
             $readme_content = Get-Content -Raw -Path "README.md"
   
             # Use regular expressions to find and replace the section between markers
