@@ -101,5 +101,5 @@ jobs:
             Else {
               # For patch versions, publish as a pre-release
               Write-Output "Publishing pre-release version - $NEW_VERSION"
-              vsce publish --pre-release -p $PERSONAL_ACCESS_TOKEN 
+              vsce publish --pre-release -p ${env:PERSONAL_ACCESS_TOKEN} 
             }
