@@ -80,9 +80,8 @@ jobs:
             PERSONAL_ACCESS_TOKEN: ${{ secrets.VS_MARKETPLACE_PAT }}
         shell: pwsh
         run: |
-
-            $CURRENT_VERSION = ${{ steps.version.outputs.current-version }}
-            $NEW_VERSION = ${{ steps.version.outputs.new-version }}
+            $CURRENT_VERSION = $(${{ steps.version.outputs.current-version }})
+            $NEW_VERSION = $(${{ steps.version.outputs.new-version }})
 
             Write-Output "CURRENT_VERSION: $CURRENT_VERSION"
             Write-Output "NEW_VERSION: $NEW_VERSION"
@@ -97,10 +96,10 @@ jobs:
             If($CURRENT_MAJOR -ne $NEW_MAJOR -or $CURRENT_MINOR -ne $NEW_MINOR ) {
               # For full release versions (major or minor version changed), publish normally
               Write-Output "Publishing full release version - $NEW_VERSION"
-              vsce publish -p $PERSONAL_ACCESS_TOKEN
+              #vsce publish -p $PERSONAL_ACCESS_TOKEN
             }
             Else {
               # For patch versions, publish as a pre-release
               Write-Output "Publishing pre-release version - $NEW_VERSION"
-              vsce publish --pre-release -p $PERSONAL_ACCESS_TOKEN 
+              #vsce publish --pre-release -p $PERSONAL_ACCESS_TOKEN 
             }
