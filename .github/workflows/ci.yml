@@ -82,11 +82,11 @@ jobs:
         run: |
             If('${{ steps.version.outputs.change-type }}' -eq 'patch') {
               # For patch versions, publish as a pre-release
-              Write-Output "Publishing pre-release version - $NEW_VERSION"
+              Write-Output "Publishing pre-release version."
               vsce publish --pre-release -p ${env:PERSONAL_ACCESS_TOKEN}
             }
             Else {
               # For full release versions (major or minor version changed), publish normally
-              Write-Output "Publishing full release version - $NEW_VERSION"
+              Write-Output "Publishing full release version."
               vsce publish -p ${env:$PERSONAL_ACCESS_TOKEN}
             }
