@@ -96,7 +96,7 @@ jobs:
             If($CURRENT_MAJOR -ne $NEW_MAJOR -or $CURRENT_MINOR -ne $NEW_MINOR ) {
               # For full release versions (major or minor version changed), publish normally
               Write-Output "Publishing full release version - $NEW_VERSION"
-              vsce publish -p $PERSONAL_ACCESS_TOKEN
+              vsce publish -p ${env:$PERSONAL_ACCESS_TOKEN}
             }
             Else {
               # For patch versions, publish as a pre-release
