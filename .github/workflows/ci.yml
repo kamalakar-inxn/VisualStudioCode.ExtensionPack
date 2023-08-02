@@ -59,7 +59,7 @@ jobs:
             
             $formatted_extensions = "`n" + $formatted_extensions + "`n"
   
-            $readme_content = Get-Content -Raw -Path "README.md"
+            $readme_content = Get-Content -Raw -Path "README.marketplace.md"
   
             # Use regular expressions to find and replace the section between markers
             $regex = "(?s)(\r?\n)*<!-- EXTENSION_PACK_START -->.*?<!-- EXTENSION_PACK_END -->"
