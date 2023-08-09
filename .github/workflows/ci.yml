@@ -29,7 +29,7 @@ jobs:
         run: npm install
 
       - name: Bump version and create Git tag
-        uses: Aqovia/npm-version-increment@tidyup
+        uses: Aqovia/npm-version-increment@v1.1.0
         id: version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
