@@ -72,6 +72,7 @@ jobs:
             $updated_content | Set-Content -Path "README.md" -NoNewline
 
       - name: Build extension and create VSIX package
+        shell: pwsh
         run: |
             If('${{ steps.version.outputs.change-type }}' -eq 'patch') {
               # For patch versions, publish as a pre-release
