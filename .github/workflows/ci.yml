@@ -72,8 +72,18 @@ jobs:
             $updated_content | Set-Content -Path "README.md" -NoNewline
 
       - name: Build extension and create VSIX package
-        run: vsce package
-  
+        run: |
+            If('${{ steps.version.outputs.change-type }}' -eq 'patch') {
+              # For patch versions, publish as a pre-release
+              Write-Output "Packaging pre-release version."
+              vsce package --pre-release
+            }
+            Else {
+              # For full release versions (major or minor version changed), publish normally
+              Write-Output "Packaging full release version."
+              vsce package
+            }
+
       - name: Publish to Visual Studio Marketplace
         env:
             PERSONAL_ACCESS_TOKEN: ${{ secrets.VS_MARKETPLACE_PAT }}
