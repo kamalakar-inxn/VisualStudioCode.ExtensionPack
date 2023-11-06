@@ -1,6 +1,7 @@
 name: Package and Publish to Visual Studio Marketplace
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - '*'
