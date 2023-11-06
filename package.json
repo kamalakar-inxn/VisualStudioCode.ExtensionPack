@@ -1,0 +1,62 @@
+{
+  "name": "aqovia-vscode-extension-pack",
+  "displayName": "Aqovia VSCode ExtensionPack",
+  "description": "Aqovia Visual Studio Code Extension Pack",
+  "version": "1.3.48",
+  "publisher": "Aqovia",
+  "license": "MIT",
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#F5F5F5",
+    "theme": "light"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "scripts": {
+    "pack": "vsce package --out VSCodeExtensionsPack.vsix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aqovia/VisualStudioCode.ExtensionPack"
+  },
+  "categories": [
+    "Extension Packs"
+  ],
+  "extensionPack": [
+    "42crunch.vscode-openapi",
+    "analytic-signal.preview-pdf",
+    "bierner.lit-html",
+    "corylulu.csharp-interpolated-string-converter",
+    "christian-kohler.npm-intellisense",
+    "DavidAnson.vscode-markdownlint",
+    "dbaeumer.vscode-eslint",
+    "donjayamanne.git-extension-pack",
+    "eriklynd.json-tools",
+    "formulahendry.dotnet-test-explorer",
+    "Fudge.auto-using",
+    "GitHub.copilot",
+    "hbenl.vscode-test-explorer",
+    "hnw.vscode-auto-open-markdown-preview",
+    "Jenkey2011.string-highlight",
+    "LittleFoxTeam.vscode-python-test-adapter",
+    "mads-hartmann.bash-ide-vscode",
+    "mrmlnc.vscode-less",
+    "msazurermtools.azurerm-vscode-tools",
+    "ms-azure-devops.azure-pipelines",
+    "ms-dotnettools.csdevkit",
+    "ms-mssql.mssql",
+    "ms-python.python",
+    "ms-vscode.PowerShell",
+    "MS-vsliveshare.vsliveshare",
+    "pflannery.vscode-versionlens",
+    "PKief.material-icon-theme",
+    "polymer.polymer-ide",
+    "redhat.vscode-yaml",
+    "redhat.vscode-xml",
+    "shd101wyy.markdown-preview-enhanced",
+    "streetsidesoftware.code-spell-checker",
+    "wix.vscode-import-cost",
+    "Zignd.html-css-class-completion"
+  ]
+}

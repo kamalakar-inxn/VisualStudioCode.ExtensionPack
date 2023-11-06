@@ -1,0 +1,102 @@
+name: Package and Publish to Visual Studio Marketplace
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
+
+      - name: Set Git configuration
+        run: |
+            git config user.name "${GITHUB_ACTOR}"
+            git config user.email "${GITHUB_ACTOR}@bots.github.com"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Bump version and create Git tag
+        uses: Aqovia/npm-version-increment@v1.1.0
+        id: version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate release changelog
+        uses: heinrichreimer/github-changelog-generator-action@v2.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: CHANGELOG.md
+      
+      - name: Install vsce CLI
+        run: npm install -g @vscode/vsce
+        
+      - name: Extract extensionPack and update README
+        shell: pwsh
+        run: |
+            # Read the extensions and convert them to Display Names and URLs
+            $extensionsJSON = node -p "JSON.stringify(require('./package.json').extensionPack, null, 2)"
+            $extensions = $extensionsJSON | ConvertFrom-Json
+
+            $formatted_extensions = @()
+            foreach ($extension in $extensions) {
+              $dispName = $(vsce show $extension --json | ConvertFrom-Json | Select-Object -ExpandProperty displayName)
+              $url = "https://marketplace.visualstudio.com/items?itemName=$($extension)"
+              $formatted_extensions += "- [$dispName]($url)`n"
+            }
+            
+            $formatted_extensions = "`n" + $formatted_extensions + "`n"
+  
+            $readme_content = Get-Content -Raw -Path "README.marketplace.md"
+  
+            # Use regular expressions to find and replace the section between markers
+            $regex = "(?s)(\r?\n)*<!-- EXTENSION_PACK_START -->.*?<!-- EXTENSION_PACK_END -->"
+            $updated_content = $readme_content -replace $regex, $formatted_extensions
+  
+            # Remove any leading or trailing newlines
+            $updated_content = $updated_content.Trim()
+  
+            # Write the updated content back to README.md
+            $updated_content | Set-Content -Path "README.md" -NoNewline
+
+      - name: Build extension and create VSIX package
+        shell: pwsh
+        run: |
+            If('${{ steps.version.outputs.change-type }}' -eq 'patch') {
+              # For patch versions, publish as a pre-release
+              Write-Output "Packaging pre-release version."
+              vsce package --pre-release
+            }
+            Else {
+              # For full release versions (major or minor version changed), publish normally
+              Write-Output "Packaging full release version."
+              vsce package
+            }
+
+      - name: Publish to Visual Studio Marketplace
+        env:
+            PERSONAL_ACCESS_TOKEN: ${{ secrets.VS_MARKETPLACE_PAT }}
+        shell: pwsh
+        run: |
+            If('${{ steps.version.outputs.change-type }}' -eq 'patch') {
+              # For patch versions, publish as a pre-release
+              Write-Output "Publishing pre-release version."
+              vsce publish --pre-release -p ${env:PERSONAL_ACCESS_TOKEN}
+            }
+            Else {
+              # For full release versions (major or minor version changed), publish normally
+              Write-Output "Publishing full release version."
+              vsce publish -p ${env:$PERSONAL_ACCESS_TOKEN}
+            }
