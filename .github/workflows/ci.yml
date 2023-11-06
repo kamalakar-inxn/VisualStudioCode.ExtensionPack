@@ -99,5 +99,5 @@ jobs:
             Else {
               # For full release versions (major or minor version changed), publish normally
               Write-Output "Publishing full release version."
-              vsce publish -p ${env:$PERSONAL_ACCESS_TOKEN}
+              vsce publish -p ${env:PERSONAL_ACCESS_TOKEN}
             }
