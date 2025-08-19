@@ -2,7 +2,7 @@
   "name": "aqovia-vscode-extension-pack",
   "displayName": "Aqovia VSCode ExtensionPack",
   "description": "Aqovia Visual Studio Code Extension Pack",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "publisher": "Aqovia",
   "license": "MIT",
   "icon": "images/icon.png",
